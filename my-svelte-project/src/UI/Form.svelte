@@ -1,14 +1,22 @@
 <script>
   import { createEventDispatcher } from "svelte";
 
+  function printSection() {
+    console.log("hey print me");
+    // let printDiv = document.getElementById("printDiv").innerHTML;
+    // document.body.innerHTML = printDiv;
+    // window.print();
+  }
+
   export let values = {
     name: "",
-    organizaion: "",
+    organization: "",
     jobTitle: "",
     phoneNumber: "",
     address: "",
     email: "",
-    photoURL: "https://i.pravatar.cc/100?img=68",
+    photoURL:
+      "https://res.cloudinary.com/practicaldev/image/fetch/s--2tRgHd7f--/c_fill,f_auto,fl_progressive,h_320,q_auto,w_320/https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/381629/ece96c10-55d1-4853-a0a7-3631e5f41313.jpeg",
     logoURL: "https://icongr.am/entypo/database.svg?size=40&color=3d9afd",
     backgroundURL:
       "https://images.unsplash.com/photo-1523961131990-5ea7c61b2107?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1267&q=80",
@@ -19,7 +27,7 @@
   let firstInput = "";
   let active = {
     name: false,
-    organizaion: fasle,
+    organization: false,
     jobTitle: false,
     phoneNumber: false,
     address: false,
@@ -45,7 +53,7 @@
       type: "text",
       placeholder: "What is your Job Title",
     },
-    phone: {
+    phoneNumber: {
       lable: "Phone",
       type: "text",
       placeholder: "Enter your Mobile Number",
@@ -82,6 +90,7 @@
     console.log(event);
 
     event.key === "Shift" ? "" : (disabled = false);
+    dispatch("createQRCode", false);
   }
 
   function resetForm() {
@@ -120,108 +129,187 @@
     border-color: hsl(211, 63%, 35%);
     box-shadow: 0 1px 3px hsla(211, 63%, 35%, 0.4);
   }
+  container {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+  }
 </style>
 
-<form>
-  <label>
-    <div class="labelText">{inputData.name.lable}</div>
+<container>
+  <form>
+    <label>
+      <div class="labelText">{inputData.name.lable}</div>
 
-    <input
-      type="text"
-      placeholder={inputData.name.placeholder}
-      class:active={active.name}
-      on:focus={() => {
-        active.name = true;
-      }}
-      on:blue={() => {
-        active.name = false;
-      }}
-      on:keydown={keyPressed}
-      bind:value={values.name}
-      bind:this={firstInput} />
-  </label>
+      <input
+        type="text"
+        placeholder={inputData.name.placeholder}
+        class:active={active.name}
+        on:focus={() => {
+          active.name = true;
+        }}
+        on:blue={() => {
+          active.name = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.name}
+        bind:this={firstInput} />
+    </label>
 
-  <label>
-    <div class="lableText">{inputData.organization.lable}</div>
+    <label>
+      <div class="labelText">{inputData.organization.lable}</div>
 
-    <input
-      type="text"
-      placeholder={inputData.organization.placeholder}
-      class:active={active.organization}
-      on:focus={() => {
-        active.organization = true;
-      }}
-      on:blue={() => {
-        active.organization = false;
-      }}
-      on:keydown={keyPressed}
-      bind:value={values.organization}
-      bind:this={firstInput} />
-  </label>
+      <input
+        type="text"
+        placeholder={inputData.organization.placeholder}
+        class:active={active.organization}
+        on:focus={() => {
+          active.organization = true;
+        }}
+        on:blue={() => {
+          active.organization = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.organization} />
+    </label>
 
-  <label>
-    <div class="labelText">{inputData.jobTitle.lable}</div>
+    <label>
+      <div class="labelText">{inputData.address.lable}</div>
+      <input
+        type="text"
+        placeholder={inputData.address.placeholder}
+        class:active={active.address}
+        on:focus={() => {
+          active.address = true;
+        }}
+        on:blur={() => {
+          active.address = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.address} />
+    </label>
 
-    <input
-      type="text"
-      placeholder={inputData.jobTitle.placeholder}
-      class:active={active.jobTitle}
-      on:focus={() => {
-        active.jobTitle = true;
-      }}
-      on:blue={() => {
-        active.jobTitle = false;
-      }}
-      on:keydown={keyPressed}
-      bind:value={values.jobTitle}
-      bind:this={firstInput} />
-  </label>
+    <label>
+      <div class="labelText">{inputData.jobTitle.lable}</div>
 
-  <lable>
-    <div class="labelText">{inputData.phone.lable}</div>
-    <input
-      type="text"
-      placeholder={inputData.phone.placeholder}
-      class:active={active.phone}
-      on:focus={() => {
-        active.phone = true;
-      }}
-      on:blue={() => {
-        active.phone = false;
-      }}
-      on:keydown={keyPressed}
-      bind:value={values.jobTitle}
-      bind:this={firstInput} />
-  </lable>
+      <input
+        type="text"
+        placeholder={inputData.jobTitle.placeholder}
+        class:active={active.jobTitle}
+        on:focus={() => {
+          active.jobTitle = true;
+        }}
+        on:blue={() => {
+          active.jobTitle = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.jobTitle} />
+    </label>
 
-  <label>
-    <div class="labelText">{inputData.email.lable}</div>
+    <label>
+      <div class="labelText">{inputData.phoneNumber.lable}</div>
+      <input
+        type="text"
+        placeholder={inputData.phoneNumber.placeholder}
+        class:active={active.phone}
+        on:focus={() => {
+          active.phoneNumber = true;
+        }}
+        on:blue={() => {
+          active.phoneNumber = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.phoneNumber} />
+    </label>
 
-    <input
-      type="text"
-      placeholder={inputData.email.placeholder}
-      class:active={active.email}
-      on:focus={() => {
-        active.email = true;
-      }}
-      on:blue={() => {
-        active.email = false;
-      }}
-      on:keydown={keyPressed}
-      bind:value={values.email}
-      bind:this={firstInput} />
-  </label>
+    <label>
+      <div class="labelText">{inputData.email.lable}</div>
 
-</form>
-<buttonContainer>
-  <button {disabled} on:click={resetForm}>Reset</button>
+      <input
+        type="text"
+        placeholder={inputData.email.placeholder}
+        class:active={active.email}
+        on:focus={() => {
+          active.email = true;
+        }}
+        on:blue={() => {
+          active.email = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.email} />
+    </label>
 
-  <button
-    on:click|preventDefault={(e) => {
-      dispatch('CreateCode', name);
-    }}>
-    Create QRCode
-  </button>
+    <label>
+      <div class="labelText">{inputData.photoURl.lable}</div>
 
-</buttonContainer>
->
+      <input
+        type="text"
+        placeholder={inputData.photoURl.placeholder}
+        class:active={active.photoURl}
+        on:focus={() => {
+          active.photoURl = true;
+        }}
+        on:blue={() => {
+          active.photoURl = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.photoURL} />
+    </label>
+
+    <label>
+      <div class="labelText">{inputData.logoURL.lable}</div>
+
+      <input
+        type="text"
+        placeholder={inputData.logoURL.placeholder}
+        class:active={active.logoURL}
+        on:focus={() => {
+          active.logoURL = true;
+        }}
+        on:blue={() => {
+          active.logoURL = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.logoURL} />
+    </label>
+
+    <label>
+      <div class="labelText">{inputData.backgroundURL.lable}</div>
+
+      <input
+        type="text"
+        placeholder={inputData.backgroundURL.placeholder}
+        class:active={active.backgroundURL}
+        on:focus={() => {
+          active.backgroundURL = true;
+        }}
+        on:blue={() => {
+          active.backgroundURL = false;
+        }}
+        on:keydown={keyPressed}
+        bind:value={values.backgroundURL} />
+    </label>
+
+  </form>
+  <article>
+    <buttonContainer>
+      <button {disabled} on:click={resetForm}>Reset</button>
+
+      <button
+        on:click|preventDefault={(e) => {
+          dispatch('CreateCode', true);
+        }}>
+        Create QRCode
+      </button>
+
+      <button on:click|preventDefault={() => alert('coming soon')}>
+        Print Card
+      </button>
+
+      <button on:click|preventDefault={() => alert('coming soon')}>
+        Customize Card
+      </button>
+
+    </buttonContainer>
+  </article>
+</container>
